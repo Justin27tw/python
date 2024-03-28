@@ -1,0 +1,55 @@
+import requests,json#使用套件
+
+def menu():#定義menu
+    os.system("cls")#清除螢幕
+#格式化列印
+    print()
+    print("="*30)
+    print("地方小吃與休閒農場查詢系統")
+    print("="*30)
+    print("1. 各縣市特色小吃")
+    print("2. 各縣市休閒農場")
+    print("其他 ==> 結束程式")
+    print("-"*30)
+def  food():#定義food
+    city=input("請輸入縣市查詢特色小吃：")#city變數值來自鍵盤輸入
+    url="https://data.coa.gov.tw/Service/OpenData/ODwsv/ODwsvTravelFood.aspx"#網址
+    print_list(url,city)#like方法
+    
+def farm():
+    city=input("請輸入縣市查詢休閒農場：")#city變數值來自鍵盤輸入
+    url="https://data.coa.gov.tw/Service/OpenData/ODwsv/ODwsvAttractions.aspx"#網址
+    print_list(url,city) #like方法
+    
+def print_list(url,city):#定義print_list
+    city=city.replace("台","臺")#關鍵字的取代互通
+    rp=requests.get(url)#rp這個變數的值為requests套件取得網址
+    rp.encoding="utf_8_sig"#編碼聲明
+    all_list=json.loads(rp.text)
+    #all_list這個變數的值為呼叫rp所對應的網址之內容文字
+    
+    for item in all_list: #跑網址內所有資料
+        if city in str(item["City"]):#如果在網址內找到相同的city
+            print("="*30)
+            print("名稱："+item['Name'])#key->名稱 value->name
+            print("地址："+item['Address'])
+            print("電話："+item['Tel'])
+    count=sum(1 for item in all_list if city in str(item["City"]))
+    #給count值for迴圈從網址內資料如果找到與鍵盤輸入時的城市加起來
+    print(city,"總計有",count,"個地區")
+    input('\n任意鍵繼續')#input->鍵盤輸入
+
+import os #os.system(命令)
+
+while True :
+    menu()
+    choice=input("請輸入你的選擇:")#鍵盤輸入並且把值給choice
+    print()
+    if choice=="1":#如果choice的值為1的話
+        food() #跳到14行
+    elif choice=="2":#再次判斷
+        farm()#跳到19行
+    else :
+        break
+print("程式執行完成")
+    
